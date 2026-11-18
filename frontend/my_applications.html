@@ -1,0 +1,36 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Applications - SkillConnect</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <div class="container">
+        <h1>My Applications</h1>
+
+        {% if applications %}
+            {% for application in applications %}
+                <div class="job-card">
+                    <h2>{{ application.job_title }}</h2>
+
+                    <p>Company: {{ application.company_name }}</p>
+                    <p>Location: {{ application.location }}</p>
+                    <p>Salary: {{ application.salary or "Not specified" }}</p>
+                    <p>Job Type: {{ application.job_type }}</p>
+                    <p>Applied At: {{ application.applied_at }}</p>
+                    <p>Application Status: {{ application.status }}</p>
+
+                    <p>Application Status: Submitted</p>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>You have not applied for any jobs yet.</p>
+        {% endif %}
+
+        <a href="/dashboard">Back to Dashboard</a>
+    </div>
+
+</body>
+</html>

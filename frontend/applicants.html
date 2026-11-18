@@ -1,0 +1,54 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Job Applicants - SkillConnect</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <div class="container">
+        <h1>Job Applicants</h1>
+
+        <h2>{{ job.job_title }}</h2>
+
+        {% if applicants %}
+            {% for applicant in applicants %}
+                <div class="job-card">
+
+                    <h3>{{ applicant.full_name }}</h3>
+                    <p>Application ID: {{ applicant.id }}</p>
+
+                    <p>Email: {{ applicant.email }}</p>
+                    <p>Mobile: {{ applicant.mobile }}</p>
+                    <p>Applied At: {{ applicant.applied_at }}</p>
+
+                    <p>
+                        Current Status:
+                        <strong>{{ applicant.status }}</strong>
+                    </p>
+
+                    <form method="POST" action="/update-status/{{ applicant.id }}">
+                        <label>Update Application Status</label>
+
+                        <select name="status">
+                            <option value="Pending">Pending</option>
+                            <option value="Shortlisted">Shortlisted</option>
+                            <option value="Rejected">Rejected</option>
+                            <option value="Selected">Selected</option>
+                        </select>
+
+                        <button type="submit">Update Status</button>
+                    </form>
+
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No applicants have applied for this job yet.</p>
+        {% endif %}
+
+        <a href="/dashboard">Back to Dashboard</a>
+    </div>
+
+</body>
+</html>

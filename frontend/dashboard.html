@@ -1,0 +1,170 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - SkillConnect</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+    <div class="sc-dashboard">
+
+        <header class="sc-topbar">
+            <h2 class="sc-logo">SkillConnect<span>.</span></h2>
+
+            <div class="sc-user">
+                <span>{{ user_name }}</span>
+                <a href="/logout" class="sc-logout">Logout</a>
+            </div>
+        </header>
+
+        <div class="sc-layout">
+
+            <aside class="sc-sidebar">
+                <h3>Menu</h3>
+
+                <a href="/dashboard" class="active">Dashboard</a>
+                <a href="/">Home</a>
+
+                {% if account_type == "candidate" %}
+                    <a href="#jobs">Find Jobs</a>
+                    <a href="#applications">My Applications</a>
+                    <a href="#profile">My Profile</a>
+                {% elif account_type == "employer" %}
+                   <a href="/post-job">Post a Job</a>
+                    <a href="#candidates">Find Candidates</a>
+                    <a href="#manage-jobs">Manage Jobs</a>
+                {% endif %}
+            </aside>
+
+            <main class="sc-main">
+
+                <section class="sc-welcome">
+                    <div>
+                        <p>WELCOME TO SKILLCONNECT</p>
+                        <h1>Hello, {{ user_name }}!</h1>
+
+                        {% if account_type == "candidate" %}
+                            <p>Find the right opportunity and build your future.</p>
+                        {% else %}
+                            <p>Find skilled people and grow your business.</p>
+                        {% endif %}
+                    </div>
+
+                    <div class="sc-account">
+                        {{ account_type|capitalize }} Account
+                    </div>
+                </section>
+
+                {% if account_type == "candidate" %}
+
+                    <h2 class="sc-heading">Your Career Dashboard</h2>
+
+                    <div class="sc-cards">
+
+                        <div class="sc-card">
+                            <div class="sc-icon">🔍</div>
+                            <h3>Find Jobs</h3>
+                            <p>Explore jobs according to your skills.</p>
+                            <a href="/jobs">Explore Jobs →</a>
+                            <a href="/my-applications">My Applications →</a>
+                            <a href="/profile">My Profile →</a>
+                        </div>
+
+                        <div class="sc-card">
+                            <div class="sc-icon">📄</div>
+                            <h3>Applications</h3>
+                            <p>Keep track of your job applications.</p>
+                            <a href="#applications">View Applications →</a>
+                        </div>
+
+                        <div class="sc-card">
+                            <div class="sc-icon">👤</div>
+                            <h3>Your Profile</h3>
+                            <p>Build your professional profile.</p>
+                            <a href="#profile">Update Profile →</a>
+                        </div>
+
+                    </div>
+
+                {% elif account_type == "employer" %}
+
+                    <h2 class="sc-heading">Your Hiring Dashboard</h2>
+
+                    <div class="sc-cards">
+
+                        <div class="sc-card">
+                            <div class="sc-icon">➕</div>
+                            <h3>Post a Job</h3>
+                            <p>Publish job opportunities for candidates.</p>
+                            <a href="/post-job">Post Job →</a>
+                            <section class="sc-posted-jobs" id="manage-jobs">
+
+    <h2 class="sc-heading">My Posted Jobs</h2>
+
+    {% if jobs %}
+
+        <div class="sc-cards">
+
+            {% for job in jobs %}
+
+                <div class="sc-card">
+                    <h3>{{ job.job_title }}</h3>
+
+                    <p><strong>Company:</strong> {{ job.company_name }}</p>
+
+                    <p><strong>Location:</strong> {{ job.location }}</p>
+
+                    <p><strong>Salary:</strong> {{ job.salary or "Not specified" }}</p>
+
+                    <p><strong>Job Type:</strong> {{ job.job_type }}</p>
+
+                </div>
+                <a href="/applicants/{{ job.id }}">View Applicants</a>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <p>You have not posted any jobs yet.</p>
+
+    {% endif %}
+
+</section>
+                        </div>
+
+                        <div class="sc-card">
+                            <div class="sc-icon">👥</div>
+                            <h3>Find Candidates</h3>
+                            <p>Discover talented people for your company.</p>
+                            <a href="#candidates">Explore Candidates →</a>
+                        </div>
+
+                        <div class="sc-card">
+                            <div class="sc-icon">📋</div>
+                            <h3>Manage Jobs</h3>
+                            <p>Manage your posted job opportunities.</p>
+                            <a href="#manage-jobs">Manage Jobs →</a>
+                        </div>
+
+                    </div>
+
+                {% endif %}
+
+                <section class="sc-bottom">
+                    <h2>Every Skill Deserves An Opportunity.</h2>
+                    <p>Welcome to your journey with SkillConnect.</p>
+                </section>
+
+            </main>
+
+        </div>
+
+    </div>
+
+</body>
+</html>

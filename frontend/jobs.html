@@ -1,0 +1,69 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explore Jobs - SkillConnect</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+    <div class="sc-dashboard">
+
+        <header class="sc-topbar">
+            <h2 class="sc-logo">SkillConnect<span>.</span></h2>
+            <div class="sc-user">
+                <a href="/dashboard">Dashboard</a>
+            </div>
+        </header>
+
+        <main class="sc-main">
+
+            <section class="sc-welcome">
+                <div>
+                    <p>CAREER OPPORTUNITIES</p>
+                    <h1>Explore Jobs</h1>
+                    <p>Find the right job and build your future.</p>
+                </div>
+            </section>
+
+            <h2 class="sc-heading">Available Jobs</h2>
+
+            {% if jobs %}
+
+                <div class="sc-cards">
+
+                    {% for job in jobs %}
+
+                        <div class="sc-card">
+                            <h3>{{ job.job_title }}</h3>
+
+                            <p><strong>Company:</strong> {{ job.company_name }}</p>
+                            <p><strong>Location:</strong> {{ job.location }}</p>
+                            <p><strong>Salary:</strong> {{ job.salary or "Not specified" }}</p>
+                            <p><strong>Job Type:</strong> {{ job.job_type }}</p>
+
+                            <p>{{ job.description }}</p>
+
+                           <form method="POST" action="/apply/{{ job.id }}">
+    <button type="submit">Apply Now</button>
+</form>
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <p>No jobs available right now.</p>
+
+            {% endif %}
+
+        </main>
+
+    </div>
+
+</body>
+</html>

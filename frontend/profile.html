@@ -1,0 +1,38 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Profile - SkillConnect</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <div class="container">
+        <h1>My Candidate Profile</h1>
+        <p>Complete your profile to get better job opportunities.</p>
+
+        <form method="POST" action="/profile">
+
+            <label>Full Name</label>
+            <input type="text" value="{{ user.full_name }}" readonly>
+
+            <label>Education / Qualification</label>
+            <input type="text" name="qualification"
+                   value="{{ user.qualification or '' }}"
+                   placeholder="Example: B.Tech Information Technology">
+
+            <label>Skills</label>
+            <textarea name="skills" placeholder="Example: Python, HTML, CSS, SQL">{{ user.skills or '' }}</textarea>
+
+            <label>Experience</label>
+            <textarea name="experience" placeholder="Fresher or describe your work experience">{{ user.experience or '' }}</textarea>
+
+            <button type="submit">Save Profile</button>
+
+        </form>
+
+        <a href="/dashboard">Back to Dashboard</a>
+    </div>
+
+</body>
+</html>
