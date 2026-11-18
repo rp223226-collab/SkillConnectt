@@ -1,26 +1,44 @@
 
+import os
+import sqlite3
+
 from flask import Flask, render_template, request, redirect, url_for, session
 from werkzeug.security import generate_password_hash, check_password_hash
-import sqlite3
+
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+FRONTEND_DIR = os.path.join(BASE_DIR, "frontend")
+DATABASE_DIR = os.path.join(BASE_DIR, "database")
+
+DATABASE_PATH = os.environ.get(
+    "DATABASE_PATH",
+    os.path.join(DATABASE_DIR, "skillconnect.db")
+)
+
+os.makedirs(os.path.dirname(DATABASE_PATH), exist_ok=True)
 
 app = Flask(
     __name__,
-    template_folder="../frontend",
-    static_folder="../frontend",
+    template_folder=FRONTEND_DIR,
+    static_folder=FRONTEND_DIR,
     static_url_path="/static"
 )
 
-app.secret_key = "skillconnect-secret-key"
+app.secret_key = os.environ.get(
+    "SECRET_KEY",
+    "skillconnect-development-key"
+)
 
 
 def get_db_connection():
-    conn = sqlite3.connect("database/skillconnect.db")
+    conn = sqlite3.connect(DATABASE_PATH)
     conn.row_factory = sqlite3.Row
+    conn.execute("PRAGMA foreign_keys = ON")
     return conn
 
 
 def create_table():
-
     conn = get_db_connection()
     cursor = conn.cursor()
 
@@ -110,7 +128,10 @@ def register():
         password = request.form.get("password", "")
         confirm_password = request.form.get("confirm_password", "")
 
-        if not all([full_name, email, mobile, account_type, password, confirm_password]):
+        if not all([
+            full_name, email, mobile,
+            account_type, password, confirm_password
+        ]):
             return "Please fill all fields"
 
         if account_type not in ["candidate", "employer"]:
@@ -376,7 +397,12 @@ def update_status(application_id):
 
     status = request.form.get("status")
 
-    allowed_statuses = ["Pending", "Shortlisted", "Rejected", "Selected"]
+    allowed_statuses = [
+        "Pending",
+        "Shortlisted",
+        "Rejected",
+        "Selected"
+    ]
 
     if status not in allowed_statuses:
         return "Invalid application status"
@@ -385,7 +411,7 @@ def update_status(application_id):
     cursor = conn.cursor()
 
     cursor.execute("""
-        SELECT jobs.id
+        SELECT jobs.id AS job_id
         FROM applications
         JOIN jobs ON applications.job_id = jobs.id
         WHERE applications.id = ?
@@ -407,7 +433,10 @@ def update_status(application_id):
     conn.commit()
     conn.close()
 
-    return redirect(url_for("view_applicants", job_id=application["id"]))
+    return redirect(
+        url_for("view_applicants", job_id=application["job_id"])
+    )
+
 
 # POST A JOB
 @app.route("/post-job", methods=["GET", "POST"])
@@ -428,7 +457,13 @@ def post_job():
         job_type = request.form.get("job_type", "")
         description = request.form.get("description", "").strip()
 
-        if not all([job_title, company_name, location, job_type, description]):
+        if not all([
+            job_title,
+            company_name,
+            location,
+            job_type,
+            description
+        ]):
             return "Please fill all required fields"
 
         conn = get_db_connection()
@@ -511,6 +546,7 @@ def profile():
 
     return render_template("profile.html", user=user)
 
+
 # USER LOGOUT
 @app.route("/logout")
 def logout():
@@ -519,7 +555,10 @@ def logout():
 
     return redirect(url_for("login"))
 
+
+# CREATE DATABASE TABLES
 create_table()
+
 
 if __name__ == "__main__":
     app.run(debug=True)
